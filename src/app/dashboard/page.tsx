@@ -134,29 +134,28 @@ export default function DashboardPage() {
 
       {/* Info-popup */}
       {selectedDepot && (
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 bg-white shadow-lg p-4 rounded w-80">
-          <h2 className="text-lg font-bold mb-2">{selectedDepot.name}</h2>
-
-          <label className="block mb-1">Fulle fat</label>
-          <input
-            type="number"
-            value={selectedDepot.full}
-            onChange={(e) =>
-              updateDepot({ ...selectedDepot, full: parseInt(e.target.value) || 0 })
-            }
-            className="border p-1 w-full mb-2"
-          />
-
-          <label className="block mb-1">Tomme fat</label>
-          <input
-            type="number"
-            value={selectedDepot.empty}
-            onChange={(e) =>
-              updateDepot({ ...selectedDepot, empty: parseInt(e.target.value) || 0 })
-            }
-            className="border p-1 w-full mb-2"
-          />
-
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 bg-white shadow-lg p-4 rounded w-80 flex flex-col">
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-lg font-bold">{selectedDepot.name}</h2>
+            <button className="bg-blue-600 text-white font-semibold px-4 py-1 rounded shadow">Avslutt</button>
+          </div>
+          <div className="flex flex-col items-start gap-2 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-green-700 font-bold" style={{ minWidth: 60 }}>Fulle</span>
+              <span className="text-2xl font-bold">{selectedDepot.full}</span>
+              <button
+                onClick={() => updateDepot({ ...selectedDepot, full: Math.max((selectedDepot.full ?? 0) - 1, 0) })}
+                className="bg-red-500 text-white px-2 py-1 rounded ml-2"
+              >
+                -
+              </button>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-red-600 font-bold" style={{ minWidth: 60 }}>Tomme</span>
+              <span className="text-2xl font-bold">{selectedDepot.empty}</span>
+            </div>
+          </div>
+          {/* Utstyr og notat, lagre/slett, ...existing code... */}
           <label className="block mb-1">Utstyr</label>
           {selectedDepot.equipment.map((eq, i) => (
             <input
@@ -182,7 +181,6 @@ export default function DashboardPage() {
           >
             + Utstyr
           </button>
-
           <div className="flex justify-between">
             <button
               onClick={() => updateDepot(selectedDepot)}
