@@ -1,0 +1,92 @@
+--- src/app/dashboard/page.tsx
++++ src/app/dashboard/page.tsx
+@@ -150,29 +150,65 @@
+-      {/* Toolbar for depot-opprettelse */}
+-      <div className="absolute top-4 left-4 z-10 bg-white shadow-lg p-3 rounded-xl flex gap-3 items-center border border-gray-200">
+-        <select
+-          className="border border-gray-400 rounded-lg px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
+-          onChange={(e) => setCreatingType(e.target.value as DepotType)}
+-          value={creatingType ?? ""}
+-        >
+-          <option value="">Velg type</option>
+-          <option value="fueldepot">⛽ Fueldepot</option>
+-          <option value="base">🏠 Base</option>
+-          <option value="helipad">🚁 Helipad</option>
+-        </select>
+-        <button
+-          onClick={() => {
+-            if (!creatingType) {
+-              alert("Velg type først!");
+-              return;
+-            }
+-            alert("Klikk på kartet for å plassere depotet");
+-          }}
+-          className="bg-green-500 hover:bg-green-600 transition text-white font-bold rounded-full w-10 h-10 flex items-center justify-center text-lg shadow-md"
+-        >
+-          +
+-        </button>
+-      </div>
++      {/* Toolbar med pluss-knapp + depotliste */}
++      <div className="absolute top-4 left-4 z-10 flex flex-col gap-3 items-start">
++
++        {/* Pluss-knapp */}
++        <button
++          onClick={() => {
++            if (creatingType === "_selecting") {
++              setCreatingType(null);
++            } else {
++              setCreatingType("_selecting" as DepotType);
++            }
++          }}
++          className="bg-green-500 hover:bg-green-600 transition text-white font-bold rounded-full w-12 h-12 flex items-center justify-center text-2xl shadow-md"
++        >
++          +
++        </button>
++
++        {/* Dropdown for valg av type – vises kun etter at man trykker på + */}
++        {creatingType === "_selecting" && (
++          <select
++            className="bg-white rounded-lg shadow-md border px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
++            onChange={(e) => {
++              const val = e.target.value as DepotType;
++              if (!val) return;
++              setCreatingType(val);
++              alert("Klikk på kartet for å plassere " + val);
++            }}
++            defaultValue=""
++          >
++            <option value="">Velg type…</option>
++            <option value="fueldepot">⛽ Fueldepot</option>
++            <option value="base">🏠 Base</option>
++            <option value="helipad">🚁 Helipad</option>
++          </select>
++        )}
++
++        {/* Dropdown for eksisterende depoter */}
++        {depots.length > 0 && (
++          <select
++            className="bg-white rounded-lg shadow-md border px-3 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
++            onChange={(e) => {
++              const depot = depots.find(d => d.id === e.target.value);
++              if (depot && mapInstance.current) {
++                // Panorer kartet
++                mapInstance.current.panTo({ lat: depot.lat, lng: depot.lng });
++                mapInstance.current.setZoom(12);
++                // Åpne popup for valgt depot
++                setSelectedDepot(depot);
++              }
++            }}
++            defaultValue=""
++          >
++            <option value="">Velg depot…</option>
++            {depots
++              .slice()
++              .sort((a, b) => a.name.localeCompare(b.name))
++              .map(d => (
++                <option key={d.id} value={d.id}>
++                  {d.name} ({d.full})
++                </option>
++              ))}
++          </select>
++        )}
++      </div>
