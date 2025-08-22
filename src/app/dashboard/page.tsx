@@ -135,9 +135,9 @@ export default function DashboardPage() {
       {/* Info-popup */}
       {selectedDepot && (
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 bg-white shadow-lg p-4 rounded w-80 flex flex-col">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-bold">{selectedDepot.name}</h2>
-            <button className="bg-blue-600 text-white font-semibold px-4 py-1 rounded shadow">Avslutt</button>
+          <div className="flex flex-col items-start mb-2">
+            <h2 className="text-lg font-bold mb-2">{selectedDepot.name}</h2>
+            <button className="bg-blue-600 text-white font-semibold px-4 py-1 rounded shadow mb-4">Avslutt</button>
           </div>
           <div className="flex flex-col items-start gap-2 mb-4">
             <div className="flex items-center gap-2">
@@ -150,7 +150,7 @@ export default function DashboardPage() {
                 -
               </button>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 mt-2">
               <span className="text-red-600 font-bold" style={{ minWidth: 60 }}>Tomme</span>
               <span className="text-2xl font-bold">{selectedDepot.empty}</span>
             </div>
